@@ -1,17 +1,17 @@
 @echo off
 chcp 65001 >nul
 :: ==============================================================================
-:: Windows Baslangicina Ekleme (Gorev Zamanlayici Kurucu)
+:: AutoDelete_Temp - 1-Click Startup Task Installer
 :: ==============================================================================
 echo ===================================================
-echo   Otomatik Temp Temizleme - Baslangic Kurulumu
+echo   AutoDelete_Temp - Startup Task Setup
 echo ===================================================
 echo.
 
-:: Yonetici haklarini kontrol et
+:: Check for administrative privileges
 net session >nul 2>&1
 if %errorLevel% neq 0 (
-    echo [BILGI] Yonetici haklari isteniyor...
+    echo [INFO] Requesting administrative privileges...
     powershell -NoProfile -Command "Start-Process cmd -ArgumentList '/c \"\"%~f0\"\"' -Verb RunAs"
     exit /b
 )

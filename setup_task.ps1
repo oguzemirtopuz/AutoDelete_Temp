@@ -1,37 +1,37 @@
 # ==============================================================================
-# Windows Gorev Zamanlayici Kurulum Betigi (UTF-8 ve Yonetici Yetkili)
+# Windows Task Scheduler Setup Script (UTF-8 & Elevated Privileges)
 # ==============================================================================
 
-# Mevcut scriptin bulundugu tam dizin yolunu al
+# Get current directory and clean_temp.ps1 path
 $currentDir = Split-Path -Parent $MyInvocation.MyCommand.Path
 $scriptPath = Join-Path -Path $currentDir -ChildPath "clean_temp.ps1"
 
-# Gorev aksiyonunu tanimla (Penceresiz PowerShell)
+# Define task action (Hidden PowerShell execution)
 $action = New-ScheduledTaskAction -Execute "powershell.exe" -Argument "-NoProfile -ExecutionPolicy Bypass -WindowStyle Hidden -File `"$scriptPath`""
 
-# Tetikleyici: Kullanici oturum actiginda
+# Trigger: At User Logon
 $trigger = New-ScheduledTaskTrigger -AtLogOn
 
-# Yetki seviyesi: En yuksek (Highest) ve kullanici kimligi
+# Principal: Highest privilege level for the current user
 $principal = New-ScheduledTaskPrincipal -UserId $env:USERNAME -LogonType Interactive -RunLevel Highest
 
-# Ayarlar: Pildeyken de calis, durdurma
+# Settings: Allow run on batteries, do not stop if going on batteries
 $settings = New-ScheduledTaskSettingsSet -AllowStartIfOnBatteries -DontStopIfGoingOnBatteries -ExecutionTimeLimit (New-TimeSpan -Minutes 10)
 
-# Varsa eski gorevi sil
+# Unregister any existing task with the same name
 Unregister-ScheduledTask -TaskName "AutoDeleteTempCleaning" -Confirm:$false -ErrorAction SilentlyContinue
 
-# Yeni gorevi kaydet
+# Register the new task
 Register-ScheduledTask -TaskName "AutoDeleteTempCleaning" -Action $action -Trigger $trigger -Principal $principal -Settings $settings | Out-Null
 
-# Kontrol et
+# Verification
 $task = Get-ScheduledTask -TaskName "AutoDeleteTempCleaning" -ErrorAction SilentlyContinue
 if ($task) {
-    Write-Host "`n[BASARILI] Gorev Zamanlayici'ya basariyla kuruldu!" -ForegroundColor Green
-    Write-Host "Hedef Betik : $scriptPath" -ForegroundColor Cyan
-    Write-Host "Tetikleyici : Kullanici oturum actiginda (ONLOGON)" -ForegroundColor Cyan
-    Write-Host "Yetki       : En Yuksek (Admin / Highest)" -ForegroundColor Cyan
-    Write-Host "Guc Ayari   : Pilde de calisir (AllowStartIfOnBatteries)`n" -ForegroundColor Cyan
+    Write-Host "`n[SUCCESS] Task Scheduler entry configured successfully!" -ForegroundColor Green
+    Write-Host "Target Script : $scriptPath" -ForegroundColor Cyan
+    Write-Host "Trigger       : At User Logon (ONLOGON)" -ForegroundColor Cyan
+    Write-Host "Privilege     : Highest (Administrator)" -ForegroundColor Cyan
+    Write-Host "Power Setting : Runs on Battery (AllowStartIfOnBatteries)`n" -ForegroundColor Cyan
 } else {
-    Write-Host "`n[HATA] Gorev olusturulamadi. Lutfen Yonetici olarak calistirin.`n" -ForegroundColor Red
+    Write-Host "`n[ERROR] Failed to create scheduled task. Please run as Administrator.`n" -ForegroundColor Red
 }

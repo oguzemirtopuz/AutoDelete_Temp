@@ -63,8 +63,8 @@ AutoDelete_Temp/
 ├── clean_temp.ps1      # Core engine — dual-path scanner, permanent purger & toast dispatcher
 ├── launcher.vbs        # Silent runner — launches PowerShell invisibly without console flicker
 ├── setup_task.ps1      # Task Scheduler architect — registers logon trigger with highest privileges
-├── kurulum.bat         # 1-Click Installer (Admin elevation wrapper)
-├── kaldir.bat          # 1-Click Uninstaller (Clean task removal)
+├── install.bat         # 1-Click Installer (Admin elevation wrapper)
+├── uninstall.bat       # 1-Click Uninstaller (Clean task removal)
 └── LICENSE             # MIT License
 ```
 
@@ -87,7 +87,7 @@ AutoDelete_Temp/
    git clone https://github.com/oguzemirtopuz/AutoDelete_Temp.git
    cd AutoDelete_Temp
    ```
-2. Double-click **`kurulum.bat`** (or Right-Click ➔ **Run as Administrator**).
+2. Double-click **`install.bat`** (or Right-Click ➔ **Run as Administrator**).
 3. The script automatically configures a high-privilege Windows Task Scheduler entry (`AutoDeleteTempCleaning`).
 
 > **That's it!** Every time your PC boots up or you log in, temporary files are purged in the background, followed by a completion toast notification.
@@ -106,7 +106,7 @@ powershell.exe -NoProfile -ExecutionPolicy Bypass -File clean_temp.ps1
 ### 3. Uninstallation (1-Click)
 
 To remove the scheduled startup task completely:
-1. Double-click **`kaldir.bat`** (Run as Administrator).
+1. Double-click **`uninstall.bat`** (Run as Administrator).
 2. The task is instantly unregistered from Windows Task Scheduler.
 
 ---
