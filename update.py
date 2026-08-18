@@ -24,6 +24,8 @@ DOWNLOAD_URL = f"https://github.com/{GITHUB_USER}/{GITHUB_REPO}/archive/refs/hea
 PROJECT_ROOT = os.path.dirname(os.path.abspath(__file__))
 
 PROTECTED_ITEMS = [
+    ".env",
+    ".env.local",
     ".git",
     ".gitignore",
     "update.py",
