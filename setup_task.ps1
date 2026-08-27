@@ -2,12 +2,21 @@
 # Windows Task Scheduler Setup Script (UTF-8 & Elevated Privileges)
 # ==============================================================================
 
-# Get current directory and clean_temp.ps1 path
-$currentDir = Split-Path -Parent $MyInvocation.MyCommand.Path
-$scriptPath = Join-Path -Path $currentDir -ChildPath "clean_temp.ps1"
+# Source directory
+$sourceDir = Split-Path -Parent $MyInvocation.MyCommand.Path
 
-# Define task action (Hidden PowerShell execution)
-$action = New-ScheduledTaskAction -Execute "powershell.exe" -Argument "-NoProfile -ExecutionPolicy Bypass -WindowStyle Hidden -File `"$scriptPath`""
+# Permanent installation target directory (User's Local AppData)
+$installDir = Join-Path $env:LOCALAPPDATA "AutoDelete_Temp"
+New-Item -ItemType Directory -Path $installDir -Force | Out-Null
+
+# Copy essential files to permanent directory
+Copy-Item (Join-Path $sourceDir "clean_temp.ps1") -Destination $installDir -Force -ErrorAction SilentlyContinue
+Copy-Item (Join-Path $sourceDir "launcher.vbs") -Destination $installDir -Force -ErrorAction SilentlyContinue
+
+$installedScript = Join-Path $installDir "clean_temp.ps1"
+
+# Define task action (Hidden PowerShell execution on the permanent script)
+$action = New-ScheduledTaskAction -Execute "powershell.exe" -Argument "-NoProfile -ExecutionPolicy Bypass -WindowStyle Hidden -File `"$installedScript`""
 
 # Trigger: At User Logon
 $trigger = New-ScheduledTaskTrigger -AtLogOn
@@ -27,11 +36,12 @@ Register-ScheduledTask -TaskName "AutoDeleteTempCleaning" -Action $action -Trigg
 # Verification
 $task = Get-ScheduledTask -TaskName "AutoDeleteTempCleaning" -ErrorAction SilentlyContinue
 if ($task) {
-    Write-Host "`n[SUCCESS] Task Scheduler entry configured successfully!" -ForegroundColor Green
-    Write-Host "Target Script : $scriptPath" -ForegroundColor Cyan
-    Write-Host "Trigger       : At User Logon (ONLOGON)" -ForegroundColor Cyan
-    Write-Host "Privilege     : Highest (Administrator)" -ForegroundColor Cyan
-    Write-Host "Power Setting : Runs on Battery (AllowStartIfOnBatteries)`n" -ForegroundColor Cyan
+    Write-Host "`n[SUCCESS] AutoDelete_Temp installed and configured successfully!" -ForegroundColor Green
+    Write-Host "Installed Path : $installedScript" -ForegroundColor Cyan
+    Write-Host "Trigger        : At User Logon (ONLOGON)" -ForegroundColor Cyan
+    Write-Host "Privilege      : Highest (Administrator)" -ForegroundColor Cyan
+    Write-Host "Power Setting  : Runs on Battery (AllowStartIfOnBatteries)`n" -ForegroundColor Cyan
+    Write-Host "You can now safely delete the downloaded folder/ZIP if you wish.`n" -ForegroundColor Yellow
 } else {
     Write-Host "`n[ERROR] Failed to create scheduled task. Please run as Administrator.`n" -ForegroundColor Red
 }

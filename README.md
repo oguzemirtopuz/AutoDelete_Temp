@@ -82,15 +82,16 @@ AutoDelete_Temp/
 
 ### 1. Installation (1-Click)
 
-1. Clone or download this repository:
+1. Clone or download this repository (ZIP):
    ```bash
    git clone https://github.com/oguzemirtopuz/AutoDelete_Temp.git
    cd AutoDelete_Temp
    ```
-2. Double-click **`install.bat`** (or Right-Click ➔ **Run as Administrator**).
-3. The script automatically configures a high-privilege Windows Task Scheduler entry (`AutoDeleteTempCleaning`).
+2. **If downloaded as ZIP:** Extract the ZIP file first (**Right-click ➔ Extract All**).
+3. Double-click **`install.bat`** (or Right-Click ➔ **Run as Administrator**).
+4. The script automatically installs itself to `%LOCALAPPDATA%\AutoDelete_Temp` and registers the elevated logon task.
 
-> **That's it!** Every time your PC boots up or you log in, temporary files are purged in the background, followed by a completion toast notification.
+> **That's it!** Once installed, you can safely delete the downloaded folder/ZIP. Every time your PC boots up or you log in, temporary files are purged in the background, followed by a completion toast notification.
 
 ---
 

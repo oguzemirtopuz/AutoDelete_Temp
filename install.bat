@@ -8,6 +8,20 @@ echo   AutoDelete_Temp - Startup Task Setup
 echo ===================================================
 echo.
 
+:: Check if user is trying to run directly inside a ZIP file
+echo "%~dp0" | findstr /i "AppData\\Local\\Temp \.zip" >nul 2>&1
+if %errorLevel% equ 0 (
+    echo [ERROR] Do NOT run directly from inside the ZIP archiver!
+    echo.
+    echo Please extract the ZIP file first:
+    echo 1. Right-click the downloaded ZIP file.
+    echo 2. Click "Extract All..." (Tumunu Ayikla).
+    echo 3. Open the extracted folder and run install.bat.
+    echo.
+    pause
+    exit /b
+)
+
 :: Check for administrative privileges
 net session >nul 2>&1
 if %errorLevel% neq 0 (

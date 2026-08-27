@@ -20,10 +20,15 @@ set "TASK_NAME=AutoDeleteTempCleaning"
 
 schtasks /delete /tn "%TASK_NAME%" /f >nul 2>&1
 
+:: Remove installed AppData directory
+if exist "%LOCALAPPDATA%\AutoDelete_Temp" (
+    rmdir /s /q "%LOCALAPPDATA%\AutoDelete_Temp" >nul 2>&1
+)
+
 if %errorLevel% equ 0 (
-    echo [SUCCESS] Startup task has been removed successfully.
+    echo [SUCCESS] AutoDelete_Temp has been completely removed.
 ) else (
-    echo [INFO] No active scheduled task found to remove.
+    echo [INFO] Task removed.
 )
 
 echo.
